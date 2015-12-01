@@ -1,6 +1,4 @@
-﻿
-function result(str){
-// 	console.log('result');
+﻿function result(str){
     str = str.split('');
     var ma = [];
     var opiration = {};
@@ -9,17 +7,17 @@ function result(str){
         v = v.replace(',','.');
         switch(true){
             case /^[0-9]+$/.test(v):
-                if(/^[0-9,.]+$/.test(ma[last])){
+                if(/[0-9,.]/.test(ma[last])){
                     ma[last] = parseFloat(ma[last].toString() + v);
                 } else {
                     ma.push(parseFloat(v));
                 }
                 break;
-            case /^[+\-/\/*/^]+$/.test(v):
+            case /^[+\-*^/]+$/.test(v):
                 ma.push(v);
                 break;
             case /^[()]+$/.test(v):
-                if(/^[a-z]+$/.test(ma[last]) && ma[last]){
+                if(/[a-z]/.test(ma[last]) && ma[last]){
                     ma[last] = ma[last] + v;
                 } else {
                     ma.push(v);
@@ -49,17 +47,12 @@ function result(str){
             stt += v + ' ';
         }
     });
-//     console.log(ma);
-//     console.log(stt);
     return ma;
 };
 // result('1 / 25 * 1.33tang23 - 4 + (1)');
 
 
 function polish(str){
-    console.log('polish');
-    console.log(str);
-    console.log(result(str));
     var arr = result(str);
     arr.push('T');
     var res = [];
@@ -74,7 +67,7 @@ function polish(str){
             case /[\^]/.test(val):
                 lvl = 1;
                 break;
-            case /[*\/]/.test(val):
+            case /[*/]/.test(val):
                 lvl = 2;
                 break;
             case /[+\-]/.test(val):
@@ -87,13 +80,6 @@ function polish(str){
         var lastStack = stack[stack.length - 1];
         var v = arr[i];
         if(v == ' ') continue;
-
-// 	console.log('--------------------------')
-// 	console.log(v);
-// 	console.log(level(v));
-// 	console.log(level(lastStack));
-//    	console.log(res);
-//    	console.log(stack);
 
         switch(true){
             case (/[0-9]/.test(v)):
@@ -124,16 +110,11 @@ function polish(str){
                 break;
         }
     }
-//     console.log(res);
-//     console.log(stack);
     return res;
 }
 
 
 function polishCalc(str){
-    console.log('polishCalc');
-    console.log(str);
-//	str = str.split('');
     var stack = [];
     function match(cell, newCell){
         stack.splice(-cell);
@@ -142,12 +123,6 @@ function polishCalc(str){
     str.forEach(function(v, i, a){
         var lv1 = stack[stack.length - 2];
         var lv2 = stack[stack.length - 1];
-// 		console.log('-----');
-// 		console.log(stack);
-// 		console.log(v);
-// 		console.log(lv1);
-// 		console.log(lv2);
-// 		console.log(lv1 * lv2);
         if(/[0-9]/.test(v)){
             stack.push(parseFloat(v));
         }
@@ -168,10 +143,7 @@ function polishCalc(str){
                 match(2, Math.pow(lv1, lv2));
                 break;
         }
-
-// 		console.log(stack);
     });
     return stack
 }
-console.log(polishCalc(polish('(22,5+245/5777) * 6 ^ (1,223 + (4/2))')));
-//polish('(8+2*5)/(1+3*2-4)');
+console.log(polishCalc(polish('1+2*3/(4+5*6)-7')));
