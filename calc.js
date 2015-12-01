@@ -1,5 +1,5 @@
 ﻿function polish(str){
-    var arr = str.match(/[0-9]+|[a-z]+|[+/\-*()]/g),
+    var arr = str.match(/[0-9]+|[a-z]+|[+/\-*()^]/g),
         res = [],
         stack = ['T'];
     arr.push('T');
