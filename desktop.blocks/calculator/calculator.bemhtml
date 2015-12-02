@@ -1,8 +1,14 @@
 block('calculator')(
+    js()(true),
     content()(function() {
-        return {
+        return [{
+            elem: 'output'
+        },{
+            block : 'input',
+            mods : { theme : 'islands', size : 'm' }
+        },{
             elem: 'keyboard'
-        }
+        }]
     }),
 
     elem('keyboard')(
@@ -18,17 +24,13 @@ block('calculator')(
             buttons.forEach(function(v){
                 rtn.push(
                     {
-                        elem: 'button',
-                        content: {
-                            elem: 'text',
-                            content: v
-                        }
+                        block : 'button',
+                        text : v
                     }
                 )
             });
             return rtn;
         }),
-        elem('button')(),
         elem('text')(
             tag()('span')
         )

@@ -5,7 +5,7 @@
 .calculator__keyboard{
     width:280px;
 }
-.calculator__button{
+.button__control{
     display: inline-block;
     width: 58px;
     height: 40px;
@@ -15,7 +15,8 @@
     border-radius: 3px;
     background-color: #fff;
     cursor: pointer;
+    padding: 0;
 }
-.calculator__text{
+.button__control span{
     text-align: center;
 }
