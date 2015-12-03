@@ -101,7 +101,7 @@ modules.define(
                     stack.splice(-cell);
                     stack.push(newCell);
                 }
-                equ.forEach(function(value, index, array){
+                equ.forEach(function(value, i, a){
                     var lv1 = stack[stack.length - 2];
                     var lv2 = stack[stack.length - 1];
                     if(/[0-9]/.test(value)){
@@ -124,7 +124,7 @@ modules.define(
                             match(2, Math.pow(lv1, lv2));
                             break;
                         case '%':
-                            if(array[index+1] == '*'){
+                            if(a[i+1] == '*'){
                                 match(1, lv2 * 0.01);
                             } else {
                                 match(1, lv1 * (lv2 * 0.01));
