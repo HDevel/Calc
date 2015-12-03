@@ -16,7 +16,27 @@
     background-color: #fff;
     cursor: pointer;
     padding: 0;
+    box-sizing: border-box;
 }
 .button__control span{
     text-align: center;
+}
+.input__control{
+    width: 262px;
+    height: 40px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 3px;
+    background-color: #fff;
+    margin: 0px 0px 10px 0px;
+    padding: 0;
+    box-sizing: border-box;
+    text-indent: 10px;
+    font-size: 20px;
+}
+.calculator__output{
+    width: 262px;
+    height: 40px;
+    font-size: 22px;
+    line-height: 40px;
+    text-indent: 10px;
 }

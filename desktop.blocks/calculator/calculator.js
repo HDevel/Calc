@@ -6,27 +6,47 @@ modules.define(
             onSetMod: {
                 'js': {
                     'inited': function() {
-                        this.input = this.findBlockInside('input');
+                        var self = this;
+                        self.input = this.findBlockInside('input');
+
                         this.findBlocksInside('button').forEach(function (block) {
                             block.bindTo('click',function(){
+                                var btnText = this.domElem.text();
+                                var val = self.input.getVal();
+                                switch(btnText){
+                                    case 'CE':
+                                        val = '';
+                                        break;
+                                    case '=':
+                                        val = self.result;
+                                        break;
+                                    default:
+                                        val += btnText;
+                                        break;
+                                }
+                                self.input.setVal(val);
                             })
                         });
-                        this.findBlockInside('input').on('change', this._onChange, this);
+
+                        self.input.on('change', this._onChange, this);
                     }
                 }
             },
             _onChange: function() {
-                var res = this._polishCalculator(this._toPolish(this.input.getVal()));
-                this.findBlockInside('calculator__output').domElem.text(res);
+                this.result = this._polishCalculator(this._toPolish(this.input.getVal()));
+                this.findBlockInside('calculator__output').domElem.text(this.result);
             },
             _toPolish: function(str){
-                var arr = str.toLowerCase().match(/[0-9.,]+|[a-z]+|[+/\-*()^]/g),
+                var arr = str.toLowerCase()
+                        .replace(/,/g,'.')
+                        .replace(/÷/g,'/')
+                        .match(/[0-9.]+|[a-z]+|[+/\-*()^%]/g),
                     res = [],
                     stack = ['T'];
                 if(arr === null || str == '')
                 return str;
                 arr.push('T');
-                arr[0].match(/[+/\-*()^]/g) && arr.unshift('0');
+                arr[0].match(/[+/\-*^]/g) && arr.unshift('0');
 
                 function level(val){
                     var lvl;
@@ -34,7 +54,7 @@ modules.define(
                         case /[(T]/.test(val):
                             lvl = 0;
                             break;
-                        case /[\^]/.test(val):
+                        case /[\^%]/.test(val):
                             lvl = 1;
                             break;
                         case /[*/]/.test(val):
@@ -81,15 +101,15 @@ modules.define(
                 }
                 return res;
             },
-            _polishCalculator: function(str){
-                if(str === undefined || str == '')
-                    return str;
+            _polishCalculator: function(equ){
+                if(equ === undefined || equ == '')
+                    return equ;
                 var stack = [];
                 function match(cell, newCell){
                     stack.splice(-cell);
                     stack.push(newCell);
                 }
-                str.forEach(function(v, i, a){
+                equ.forEach(function(v, i, a){
                     var lv1 = stack[stack.length - 2];
                     var lv2 = stack[stack.length - 1];
                     if(/[0-9]/.test(v)){
@@ -110,6 +130,13 @@ modules.define(
                             break;
                         case '^':
                             match(2, Math.pow(lv1, lv2));
+                            break;
+                        case '%':
+                            if(a[i+1] == '*'){
+                                match(1, lv2 * 0.01);
+                            } else {
+                                match(1, lv1 * (lv2 * 0.01));
+                            }
                             break;
                     }
                 });
