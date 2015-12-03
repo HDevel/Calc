@@ -20,11 +20,18 @@ modules.define(
                                     case '=':
                                         val = self.result;
                                         break;
+                                    case 'X':
+                                        val += '*';
+                                        break;
+                                    case '÷':
+                                        val += '/';
+                                        break;
                                     default:
                                         val += btnText;
                                         break;
                                 }
                                 self.input.setVal(val);
+                                self.input.findBlockInside('input__control').domElem.focus();
                             })
                         });
 
@@ -36,67 +43,52 @@ modules.define(
                 this.result = this._polishCalculator(this._toPolish(this.input.getVal()));
                 this.findBlockInside('calculator__output').domElem.text(this.result);
             },
-            _toPolish: function(str){
-                var arr = str.toLowerCase()
+            _toPolish: function(string){
+                var array = string.toLowerCase()
                         .replace(/,/g,'.')
-                        .replace(/÷/g,'/')
                         .match(/[0-9.]+|[a-z]+|[+/\-*()^%]/g),
                     res = [],
                     stack = ['T'];
-                if(arr === null || str == '')
-                return str;
-                arr.push('T');
-                arr[0].match(/[+/\-*^]/g) && arr.unshift('0');
+                if(array === null || string == ''){
+                    return string;
+                }
+                array.push('T');
+                array[0].match(/[+/\-*^]/g) && array.unshift('0');
 
                 function level(val){
-                    var lvl;
-                    switch(true){
-                        case /[(T]/.test(val):
-                            lvl = 0;
-                            break;
-                        case /[\^%]/.test(val):
-                            lvl = 1;
-                            break;
-                        case /[*/]/.test(val):
-                            lvl = 2;
-                            break;
-                        case /[+\-]/.test(val):
-                            lvl = 3;
-                            break;
-                    }
-                    return lvl
+                    var regex = [/[(T]/, /[\^%]/, /[*/]/, /[+\-]/],
+                        level;
+                    regex.forEach(function(v, i){
+                        if(val.match(v)){
+                            level = i;
+                        }
+                    })
+                    return level;
                 }
-                for(var i = 0; i < arr.length; i++){
+                for(var i = 0; i < array.length; i++){
                     var lastStack = stack[stack.length - 1];
 
-                    if(arr[i] == '-' && /[+/\-*^]/.test(arr[i - 1])){
-                        arr[i + 1] = -parseFloat(arr[i + 1]);
-                        arr[i] = ' ';
+                    if(array[i] == '-' && /[+/\-*^]/.test(array[i - 1])){
+                        array[i + 1] = -parseFloat(array[i + 1]);
+                        array[i] = ' ';
                     }
-                    var v = arr[i];
-                    if(v == ' ') continue;
-                    switch(true){
-                        case (/[0-9]/.test(v)):
-                            res.push(v);
-                            break;
-
-                        case (lastStack == '(' && v == ')'):
-                            stack.pop();
-                            break;
-
-                        case (v == ')' || lastStack != 'T' && v == 'T'):
-                            res.push(stack.pop());
-                            i--;
-                            break;
-
-                        case (level(v) == 0 || level(lastStack) == 0 || level(v) < level(lastStack)):
-                            stack.push(v);
-                            break;
-
-                        case (level(v) >= level(lastStack)):
-                            res.push(stack.pop());
-                            stack.push(v);
-                            break;
+                    var value = array[i];
+                    if(/[0-9]/.test(value)) {
+                        res.push(value);
+                    } else
+                    if(lastStack == '(' && value == ')') {
+                        stack.pop();
+                    } else
+                    if(value == ')' || lastStack != 'T' && value == 'T') {
+                        res.push(stack.pop());
+                        i--;
+                    } else
+                    if(level(value) == 0 || level(lastStack) == 0 || level(value) < level(lastStack)) {
+                        stack.push(value);
+                    } else
+                    if(level(value) >= level(lastStack)) {
+                        res.push(stack.pop());
+                        stack.push(value);
                     }
                 }
                 return res;
@@ -109,13 +101,13 @@ modules.define(
                     stack.splice(-cell);
                     stack.push(newCell);
                 }
-                equ.forEach(function(v, i, a){
+                equ.forEach(function(value, index, array){
                     var lv1 = stack[stack.length - 2];
                     var lv2 = stack[stack.length - 1];
-                    if(/[0-9]/.test(v)){
-                        stack.push(parseFloat(v));
+                    if(/[0-9]/.test(value)){
+                        stack.push(parseFloat(value));
                     }
-                    switch(v){
+                    switch(value){
                         case '+':
                             match(2, lv1 + lv2);
                             break;
@@ -132,7 +124,7 @@ modules.define(
                             match(2, Math.pow(lv1, lv2));
                             break;
                         case '%':
-                            if(a[i+1] == '*'){
+                            if(array[index+1] == '*'){
                                 match(1, lv2 * 0.01);
                             } else {
                                 match(1, lv1 * (lv2 * 0.01));
