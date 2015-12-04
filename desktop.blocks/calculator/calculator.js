@@ -74,18 +74,28 @@ modules.define(
                         array[i] = ' ';
                     }
                     var value = array[i];
+
                     if (/[0-9]/.test(value)) {
                         res.push(value);
-                    } else if (lastStack == '(' && value == ')') {
+                        continue;
+                    }
+                    if (lastStack == '(' && value == ')') {
                         stack.pop();
-                    } else if (value == ')' || lastStack != 'T' && value == 'T') {
+                        continue;
+                    }
+                    if (value == ')' || lastStack != 'T' && value == 'T') {
                         res.push(stack.pop());
                         i--;
-                    } else if (level(value) == 0 || level(lastStack) == 0 || level(value) < level(lastStack)) {
+                        continue;
+                    }
+                    if (level(value) == 0 || level(lastStack) == 0 || level(value) < level(lastStack)) {
                         stack.push(value);
-                    } else if (level(value) >= level(lastStack)) {
+                        continue;
+                    }
+                    if (level(value) >= level(lastStack)) {
                         res.push(stack.pop());
                         stack.push(value);
+                        continue;
                     }
                 }
                 return res;
