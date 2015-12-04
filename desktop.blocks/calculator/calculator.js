@@ -83,7 +83,7 @@ modules.define(
                         stack.pop();
                         continue;
                     }
-                    if (value == ')' || lastStack != 'T' && value == 'T') {
+                    if (lastStack != 'T' && (value == ')' || value == 'T')) {
                         res.push(stack.pop());
                         i--;
                         continue;
