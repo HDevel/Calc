@@ -1,15 +1,13 @@
 block('calculator')(
     js()(true),
-    content()(function() {
-        return [{
+    content()([{
             elem: 'output'
         },{
-            block : 'input',
-            mods : { theme : 'islands', size : 'm' }
+            block : 'input'
         },{
             elem: 'keyboard'
-        }]
-    }),
+        }
+    ]),
 
     elem('keyboard')(
         content()(function() {
@@ -30,9 +28,6 @@ block('calculator')(
                 )
             });
             return rtn;
-        }),
-        elem('text')(
-            tag()('span')
-        )
+        })
      )
 );
